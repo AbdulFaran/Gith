@@ -1,0 +1,14 @@
+{
+  "format": "Smart Wholesale Management backup template",
+  "version": 1,
+  "note": "The live app stores working data in browser localStorage. Use Settings > Backup Data to export a real backup JSON.",
+  "products": [],
+  "companies": [],
+  "transactions": [],
+  "customers": [],
+  "suppliers": [],
+  "employees": [],
+  "recoveries": [],
+  "expenses": [],
+  "settings": {}
+}

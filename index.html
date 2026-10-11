@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ur" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farhan ki App - Smart Wholesale Management</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="loginScreen">
+  <div id="loginCard">
+    <h1>Farhan ki App</h1>
+    <p>Smart Wholesale Management</p>
+    <input id="loginUser" placeholder="Username" autocomplete="username">
+    <input id="loginPass" type="password" placeholder="Password" autocomplete="current-password">
+    <button class="btn" style="width:100%;margin-top:8px" onclick="login()">Login</button>
+    <div id="loginError">Invalid username or password.</div>
+  </div>
+</div>
+<div id="appRoot" class="locked">
+
+<header><h1>Smart Wholesale Management</h1><p>Inventory • Sales • Purchase • Recovery • Company Khata</p></header>
+<div class="layout">
+<nav id="nav">
+<button class="active" data-page="dashboard">🏠 Dashboard</button>
+<button data-page="inventory">📦 Inventory</button>
+<button data-page="purchase">🛒 New Purchase</button>
+<button data-page="sale">🧾 Sale Invoice</button>
+<button data-page="return">↩️ Sale Return</button>
+<button data-page="company">🏢 Company Khata</button>
+<button data-page="customers">👥 Customers</button>
+<button data-page="suppliers">🚚 Suppliers</button>
+<button data-page="employees">👨‍💼 Employees</button>
+<button data-page="recovery">💰 Recovery</button>
+<button data-page="customers">📒 Customer Ledger</button>
+<button data-page="marketRecovery">📋 Market Recovery Sheet</button>
+<button data-page="expense">💳 Expenses</button>
+<button data-page="transactions">📒 Transactions Log</button>
+<button data-page="reports">📊 Reports</button>
+<button data-page="print">🖨️ Print Bills</button>
+<button data-page="settings">⚙️ Settings</button>
+</nav>
+<main>
+<section id="dashboard" class="page active">
+<h2>Dashboard</h2>
+<div class="cards">
+<div class="card"><small>Total Products</small><strong id="countProducts">0</strong></div>
+<div class="card"><small>Current Pieces</small><strong id="countPieces">0</strong></div>
+<div class="card"><small>Today's Sales</small><strong id="todaySales">PKR 0</strong></div>
+<div class="card"><small>Outstanding</small><strong id="outstanding">PKR 0</strong></div>
+</div>
+<div class="panel"><h2>Quick Actions</h2><div class="actions">
+<button class="btn" onclick="showPage('inventory')">Add Product</button>
+<button class="btn green" onclick="showPage('purchase')">New Purchase</button>
+<button class="btn" onclick="showPage('sale')">New Sale</button>
+<button class="btn gray" onclick="showPage('reports')">Reports</button>
+</div></div>
+</section>
+
+<section id="inventory" class="page">
+<h2>Inventory / Product Register</h2>
+<div class="panel">
+<div class="grid">
+<div><label>Product Name</label><input id="pName" placeholder="Product name"></div>
+<div><label>Company / Brand</label><select id="pCompany"><option value="">Select company</option></select><datalist id="companyOptions"></datalist></div>
+<div><label>Supplier Name</label><select id="pSupplier"><option value="">Select supplier</option></select></div>
+<div><label>Category</label><input id="pCategory" placeholder="Category"></div>
+<div><label>Product Type</label><input id="pType" placeholder="Type"></div>
+<div><label>Size</label><input id="pSize" placeholder="Size"></div>
+<div><label>Carton Size</label><input id="pCarton" type="number" value="144"></div>
+<div><label>Box Size</label><input id="pBox" type="number" value="12"></div>
+<div><label>Current Pieces</label><input id="pPieces" type="number" value="0"></div>
+<div><label>Cost Price</label><input id="pCost" type="number" value="0"></div>
+<div><label>TP / Sale Price</label><input id="pSale" type="number" value="0"></div>
+<div><label>Status</label><select id="pStatus"><option>Active</option><option>Inactive</option></select></div>
+</div>
+<div class="actions"><button class="btn" onclick="addProduct()">Save Product</button><button class="btn gray" onclick="window.print()">Print</button><button class="btn red" onclick="clearProductForm()">Clear</button></div>
+</div>
+<div class="panel">
+<input class="search" id="inventorySearch" oninput="renderProducts()" placeholder="Close/Search: product, supplier, category, brand, type, size, stock...">
+<table><thead><tr><th>Product</th><th>Company</th><th>Supplier</th><th>Category</th><th>Size</th><th>Pieces</th><th>Cost</th><th>Sale</th><th>Status</th><th>Action</th></tr></thead><tbody id="productTable"></tbody></table>
+</div>
+</section>
+
+<section id="purchase" class="page"><h2>New Purchasing</h2><div class="panel"><div class="grid">
+<div><label>Company Name</label><select id="buyCompany"><option value="">Select company</option></select></div><div><label>Supplier</label><select id="buySupplier"><option value="">Select supplier</option></select></div><div><label>Search Product</label><input id="buySearch" oninput="filterPurchaseProducts()" placeholder="Search saved products"></div><div><label>Product</label><select id="buyProduct" onchange="selectPurchaseProduct()"><option value="">Select product</option></select></div><div><label>Pieces</label><input id="buyPieces" type="number" min="0" oninput="previewPurchaseTotal()"></div><div><label>Unit Cost Price</label><input id="buyCost" type="number" min="0" step="any" oninput="previewPurchaseTotal()"></div><div><label>Total Cost Amount</label><input id="buyTotal" type="number" readonly value="0"></div>
+</div><div class="actions"><button class="btn green" onclick="saveTransaction('Purchase')">Save / Finalize Purchase</button><button class="btn gray" onclick="window.print()">Print</button></div></div><div class="panel"><h3>Saved Products</h3><input class="search" id="purchaseListSearch" oninput="renderPurchaseList()" placeholder="Search product/company"><div id="purchaseProductList"></div></div></section>
+
+<section id="sale" class="page"><h2>Sale Invoice</h2><div class="panel"><div class="grid">
+<div><label>Customer</label><select id="saleCustomer"><option value="">Select customer</option></select></div><div><label>Salesman</label><select id="saleSalesman"><option value="">Select salesman</option></select></div><div><label>Area</label><select id="saleArea"><option value="">Select area</option></select></div><div><label>Product</label><select id="saleProduct" onchange="selectSaleProduct()"><option value="">Select product</option></select></div><div><label>Pieces</label><input id="salePieces" type="number"></div><div><label>Sale Price</label><input id="salePrice" type="number"></div>
+<div><label>Discount %</label><input id="saleDiscount" type="number" value="0"></div>
+</div><div class="panel" id="saleCartPanel"><h3>Bill Products (one bill can contain many products)</h3><div class="actions"><button class="btn" onclick="addSaleRow()">+ Add Product</button><button class="btn gray" onclick="clearSaleCart()">Clear Products</button></div><div style="overflow:auto"><table><thead><tr><th>Sr.</th><th>Product / Description</th><th>Pcs</th><th>Box</th><th>Carton</th><th>Bonus</th><th>Total Qty</th><th>Unit Price</th><th>Discount %</th><th>Discount Amount</th><th>Net Amount</th><th></th></tr></thead><tbody id="saleCartRows"></tbody><tfoot><tr><th colspan="8" style="text-align:right">Bill Total</th><th id="saleCartTotal">0.00</th><th></th></tr></tfoot></table></div></div><div class="actions"><button class="btn green" onclick="saveTransaction('Sale')">Save / Finalize One Bill</button><button class="btn gray" onclick="printSaleBill()">Print Bill</button><button class="btn gray" onclick="unfinalizeLastSale()">Unfinalize Last Bill</button></div></div></section>
+
+<section id="return" class="page"><h2>Sale Return</h2><div class="panel"><div class="grid"><div><label>Customer</label><select id="retCustomer"><option value="">Select customer</option></select></div><div><label>Product</label><input id="retProduct"></div><div><label>Pieces</label><input id="retPieces" type="number"></div><div><label>Reason</label><input id="retReason"></div></div><div class="actions"><button class="btn" onclick="saveTransaction('Sale Return')">Save Return</button></div></div></section>
+
+<section id="company" class="page"><h2>Company Khata / Stock Ledger</h2><div class="panel"><div class="grid"><div><label>Company Name</label><select id="companyName"><option value="">Select company</option></select></div><div><label>Stock Received</label><input id="companyStock" type="number"></div><div><label>Cost Amount</label><input id="companyCost" type="number"></div><div><label>Payment Made</label><input id="companyPayment" type="number"></div></div><div class="actions"><button class="btn" onclick="saveCompany()">Save Company Entry</button></div><table><thead><tr><th>Company</th><th>Stock</th><th>Cost</th><th>Paid</th><th>Balance</th></tr></thead><tbody id="companyTable"></tbody></table></div></section>
+
+<section id="customers" class="page"><h2>Customers</h2><div class="panel"><div class="grid"><div><label>Customer Name</label><input id="custName"></div><div><label>Phone</label><input id="custPhone"></div><div><label>Area</label><select id="custArea"><option value="">Select area</option></select></div><div><label>Opening Due</label><input id="custDue" type="number"></div></div><div class="actions"><button class="btn" onclick="saveSimple('customers')">Save Customer</button></div><div id="customerList" class="empty">No customers yet.</div></div></section>
+<section id="suppliers" class="page"><h2>Suppliers</h2><div class="panel"><div class="grid"><div><label>Supplier Name</label><input id="supName"></div><div><label>Phone</label><input id="supPhone"></div><div><label>Company</label><input id="supCompany"></div><div><label>Opening Balance</label><input id="supDue" type="number"></div></div><div class="actions"><button class="btn" onclick="saveSimple('suppliers')">Save Supplier</button></div><div id="supplierList" class="empty">No suppliers yet.</div></div></section>
+
+<section id="employees" class="page"><h2>Employees</h2><div class="panel"><div class="grid"><div><label>Employee Name</label><input id="empName"></div><div><label>Role</label><input id="empRole"></div><div><label>Salary</label><input id="empSalary" type="number"></div><div><label>Phone</label><input id="empPhone"></div></div><div class="actions"><button class="btn" onclick="saveSimple('employees')">Save Employee</button></div><div id="employeeList" class="empty">No employees yet.</div></div></section>
+
+<section id="recovery" class="page"><h2>New Recovery / Repayment</h2><div class="panel"><div class="grid"><div><label>Search / Select Customer</label><select id="recCustomer" onchange="updateRecoveryInfo()"><option value="">Select customer</option></select></div><div><label>Search / Select Salesman / Recovery Person</label><select id="recPerson"><option value="">Select salesman / recovery person</option></select></div><div><label>Payment Received</label><input id="recAmount" type="number" min="0" step="any"></div><div><label>Date</label><input id="recDate" type="date"></div></div><div class="cards" style="margin-top:14px"><div class="card"><small>Total Bills</small><strong id="recBilled">PKR 0</strong></div><div class="card"><small>Previous Payments</small><strong id="recPaid">PKR 0</strong></div><div class="card"><small>Pending / Balance</small><strong id="recPending">PKR 0</strong></div><div class="card"><small>Payment Entered</small><strong id="recEntered">PKR 0</strong></div></div><div class="actions"><button class="btn green" onclick="saveRecovery()">Save Recovery</button><button class="btn gray" onclick="window.print()">Print Recovery Sheet</button></div></div><div class="panel"><h2>Customer Recovery Ledger</h2><div id="recoveryLedger" class="empty">Select a customer to view bills and payments.</div></div></section>
+
+<section id="marketRecovery" class="page">
+<h2>Market Recovery / Payment Collection Sheet</h2>
+<div class="panel">
+<div class="grid">
+<div><label>From Date</label><input id="mrFrom" type="date"></div>
+<div><label>To Date</label><input id="mrTo" type="date"></div>
+<div><label>Recovery Person</label><input id="mrPerson" placeholder="Person name"></div>
+<div><label>Customer Search</label><input id="mrSearch" oninput="renderMarketRecovery()" placeholder="Customer name"></div>
+</div>
+<div class="actions">
+<button class="btn" onclick="buildMarketDates()">Create Date Columns</button>
+<button class="btn green" onclick="saveMarketRecovery()">Save Recovery Sheet</button>
+<button class="btn gray" onclick="window.print()">Print Sheet</button>
+</div>
+<p style="color:#64748b;font-size:13px">ہر تاریخ کے خانے میں وصول شدہ رقم درج کریں۔ اگلی Sheet میں پچھلی وصولیاں خودکار طور پر منہا ہو کر Remaining Due دکھایا جائے گا۔</p>
+<div style="overflow:auto"><table><thead id="mrHead"></thead><tbody id="mrBody"></tbody><tfoot id="mrFoot"></tfoot></table></div>
+</div>
+</section>
+<section id="expense" class="page"><h2>New Expense</h2><div class="panel"><div class="grid"><div><label>Expense Name</label><input id="expName"></div><div><label>Amount</label><input id="expAmount" type="number"></div><div><label>Category</label><input id="expCategory"></div><div><label>Date</label><input id="expDate" type="date"></div></div><div class="actions"><button class="btn" onclick="saveExpense()">Save Expense</button></div></div></section>
+
+<section id="transactions" class="page"><h2>Transaction Log</h2><div class="panel"><table><thead><tr><th>Date/Time</th><th>Type</th><th>Details</th><th>Amount</th></tr></thead><tbody id="transactionTable"></tbody></table></div></section>
+<section id="reports" class="page"><h2>Reports</h2><div class="panel"><div class="grid"><div><label>From Date</label><input id="fromDate" type="date"></div><div><label>To Date</label><input id="toDate" type="date"></div><div><label>Report</label><select id="reportType" onchange="toggleSalesReportFilters()"><option>Stock Report</option><option>Sales Report</option><option>Purchase Report</option><option>Profit Report</option><option>Recovery Report</option><option>Warehouse / Stock Difference Report</option></select></div><div id="salesReportFilters" style="display:none"><label>Salesman Select</label><select id="salesReportSalesman"><option value="">All Salesmen</option></select></div><div id="salesReportCustomerFilter" style="display:none"><label>Customer Select</label><select id="salesReportCustomer"><option value="">All Customers</option></select></div></div><div class="actions"><button class="btn" onclick="generateReport()">Search / Generate Report</button><button class="btn gray" onclick="printReportOnly()">Print Report</button></div><div id="reportOutput" class="panel">Select a report and generate it.</div></div></section>
+<section id="print" class="page"><h2>Print Bills</h2><div class="panel"><p>محفوظ شدہ بل تلاش کریں، پچھلا بل منتخب کریں یا دوبارہ پرنٹ کریں۔</p><div class="grid"><div><label>Search Previous Bills</label><input id="previousBillSearch" placeholder="Bill number, customer, product..." oninput="renderPreviousBills()"></div><div><label>Previous Sale Bill</label><select id="previousBillSelect"><option value="">Select previous bill</option></select></div></div><div class="actions"><button class="btn" onclick="printSelectedPreviousBill()">Print Previous Bill</button><button class="btn gray" onclick="renderPreviousBills()">Refresh Bills</button></div><div id="previousBillList"></div></div></section>
+<section id="settings" class="page"><h2>Settings</h2><div class="panel"><div class="grid"><div><label>Shop Name</label><input id="shopName" value="Smart Wholesale"></div><div><label>City</label><input id="shopCity"></div><div><label>Area</label><input id="shopArea" placeholder="Default area"></div><div><label>All Areas (comma separated)</label><input id="areaOptions" placeholder="e.g. Main Bazar, Model Town, City Area"></div><div><label>Order Booker</label><input id="booker"></div><div><label>Salesman</label><input id="salesman"></div><div><label>Recovery Collector</label><input id="collector"></div></div><div class="actions"><button class="btn" onclick="saveSettings()">Save Settings</button><button class="btn gray" onclick="backup()">Backup Data</button><button class="btn gray" onclick="restore.click()">Restore Data</button><input id="restore" type="file" accept=".json" hidden onchange="restoreData(event)"></div></div></section>
+</main></div>
+<div id="printArea" aria-hidden="true"></div>
+
+
+
+
+
+
+
+
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
